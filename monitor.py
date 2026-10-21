@@ -2,6 +2,8 @@
 import asyncio
 import json
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -47,7 +49,8 @@ async def run() -> None:
             current = await is_live(username)
             print(f"@{username}: {'LIVE' if current else 'offline'}")
             if current and not previous:
-                send_telegram(f"🔴 @{username} сейчас в прямом эфире TikTok!\nhttps://www.tiktok.com/@{username}/live")
+                detected_at = datetime.now(ZoneInfo("Europe/Kyiv")).strftime("%d.%m.%Y в %H:%M:%S")
+                send_telegram(f"🔴 @{username} сейчас в прямом эфире TikTok!\n🕒 Обнаружен: {detected_at} (Киев)\nhttps://www.tiktok.com/@{username}/live")
                 print(f"Notification sent for @{username}")
             state[username] = current
         except Exception as exc:
